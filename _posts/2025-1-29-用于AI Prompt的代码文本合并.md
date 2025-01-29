@@ -3,15 +3,15 @@ layout: post
 title: 用于LLM Prompt的代码文本合并
 ---
 
-# 1 引言
+## 1 引言
 
 近年来，LLM(大模型)发展迅速，如ChatGPT、DeepSeek等；各种LLM辅助编程工具也相继涌现，如Copilot、通义灵码等，极大地提升了编程效率。笔者日常编程使用两种：一是在[网页端](https://zaiwen.xueban.org.cn/chat/working-edition)使用GPT4o_mini，性能较强，但需要将代码从编辑器中复制粘贴到网页会话框，较为麻烦；二是使用集成于VSCode的通义灵码，但性能有限。为了方便，我们通常只会复制单个文件中的一部分代码并询问，导致LLM无法从全局给出指导。由于AI具有强大的编程能力，从根本上说，我们希望AI能够读懂整个项目，通过全局把握，高屋建瓴地帮助我们优化项目。为此，设想将项目的**目录结构**和**各文件的内容**放在一个txt文件中，然后作为附件上传给LLM。
 
 然而，LLM的Token是有限的，所以我们可以改为选定某些文件以实现合并。此外，一些对LLM的分析没有帮助的文件（如*.o, *.a, *.pdf等，以及.git中的文件）需要被过滤并排除。排除pdf文件的原因是其格式复杂，通过cat命令得到的结果常常为乱码。
 
-# 2 实现
+## 2 实现
 
-## 2.1 全部文件合并
+### 2.1 全部文件合并
 
 如下脚本首先通过`tree`指令输出项目文件树(Project File Tree)，并输出当前目录所有满足过滤条件的文件，得到code.txt：
 
@@ -32,7 +32,7 @@ done
 
 **注意**：由于这种方式会合并所有文件内容，所以要求项目较小，否则结果文件将很大，且由于涉及许多与提问不相关的内容，LLM的回答效果可能降低。建议使用2.2的方法。
 
-## 2.2 指定文件合并
+### 2.2 指定文件合并
 
 ```sh
 #!/bin/bash
@@ -105,9 +105,9 @@ done
 ```
 脚本接收`-r`和`-f`参数，以指定要合并的文件夹和文件。`-r`指定的文件夹中所有文件都会被包括；`-f`需要指定文件的路径。
 
-# 3 示例
+## 3 示例
 
-## 3.1 全部文件合并
+### 3.1 全部文件合并
 
 假设需要合并项目[ComoFscpVoter](https://gitee.com/tjopenlab/como-fscp-voter)中的文件，其目录如下：
 ```sh
@@ -149,7 +149,7 @@ $ ./merge_all.sh
 
 可以通过`ls -lh`命令看到，`code.txt`文件大小为565K，相当消耗Token。
 
-## 3.2 部分文件合并
+### 3.2 部分文件合并
 
 将2.2中的脚本保存到merge_codes.sh，放在根目录下，`chmod +x`添加权限。假设需要合并文件夹rudp和clients中的所有文件，以及根目录的./src/voter_server.c和./Makefile，运行：
 
@@ -240,9 +240,11 @@ gitdir: ../.git/modules/rudp
 （依次列出所有选定的文件内容）
 ```
 
-# 附录
+## 附录
 
-## A. 元Prompt
+### A. Prompt Creator（提示生成器）
+
+[参考链接](https://www.zhihu.com/question/584402332/answer/2956335225)
 
 ```
 I want you to become my Expert Prompt Creator. Your goal is to help me craft the best possible prompt for my needs. The prompt you provide should be written from the perspective of me making the request to DeepSeek. Consider in your prompt creation that this prompt will be entered into an interface for DeepSeek. The process is as follows:
@@ -263,10 +265,12 @@ Remember, the prompt we are creating should be written from the perspective of m
 Your first response should only be a greeting to the user to ask what the prompt should be about. Respond me in Chinese.
 ```
 
-## B. 附代码的Prompt
+### B. 附代码的Prompt
 
 ```
-你需要了解一个项目，并回答有关问题。项目的树形文件结构、重点关注的文件以及代码内容已经在文本文件中给出。
-在"xxxx.c"文件中，"...（事实描述）..."。我的问题是："...（问题）..."？
-请一步步思考，这对我很重要。
+请仔细阅读我提供的文本文件，该文件包含了我的项目的树形目录结构、关键文件以及相关代码内容。我希望你能够理解这个项目，并帮助我解答以下问题：
+
+在 "xxxx.c" 文件中，"...（描述相关的代码或内容）..."。我的问题是："...（你的具体问题）..."？
+
+请逐步思考这个问题，这对我来说非常重要。谢谢你的帮助！
 ```
