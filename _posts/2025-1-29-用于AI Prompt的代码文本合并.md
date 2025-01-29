@@ -1,0 +1,272 @@
+---
+layout: post
+title: 用于LLM Prompt的代码文本合并
+---
+
+# 1 引言
+
+近年来，LLM(大模型)发展迅速，如ChatGPT、DeepSeek等；各种LLM辅助编程工具也相继涌现，如Copilot、通义灵码等，极大地提升了编程效率。笔者日常编程使用两种：一是在[网页端](https://zaiwen.xueban.org.cn/chat/working-edition)使用GPT4o_mini，性能较强，但需要将代码从编辑器中复制粘贴到网页会话框，较为麻烦；二是使用集成于VSCode的通义灵码，但性能有限。为了方便，我们通常只会复制单个文件中的一部分代码并询问，导致LLM无法从全局给出指导。由于AI具有强大的编程能力，从根本上说，我们希望AI能够读懂整个项目，通过全局把握，高屋建瓴地帮助我们优化项目。为此，设想将项目的**目录结构**和**各文件的内容**放在一个txt文件中，然后作为附件上传给LLM。
+
+然而，LLM的Token是有限的，所以我们可以改为选定某些文件以实现合并。此外，一些对LLM的分析没有帮助的文件（如*.o, *.a, *.pdf等，以及.git中的文件）需要被过滤并排除。排除pdf文件的原因是其格式复杂，通过cat命令得到的结果常常为乱码。
+
+# 2 实现
+
+## 2.1 全部文件合并
+
+如下脚本首先通过`tree`指令输出项目文件树(Project File Tree)，并输出当前目录所有满足过滤条件的文件，得到code.txt：
+
+```sh
+#!/bin/bash
+
+output="code.txt"
+echo "Project File Tree: " > $output
+tree -I 'node_modules|*.o|*.so|*.a|exe|*.pdf|.git' >> $output
+
+echo -e "\n\nFile Contents: " >> $output
+
+find . -type f ! -path "./node_modules/*" ! -path "./.git/*" ! -name "*.o" ! -name "*.so" ! -name "*.a" ! -name "exe" ! -name "*.pdf" ! -name "code.txt" ! -name "merge_code.sh" -print0 | while IFS= read -r -d '' file; do
+    echo -e "\n\n=== FILE: $file ===\n" >> $output
+    cat "$file" >> $output
+done
+```
+
+**注意**：由于这种方式会合并所有文件内容，所以要求项目较小，否则结果文件将很大，且由于涉及许多与提问不相关的内容，LLM的回答效果可能降低。建议使用2.2的方法。
+
+## 2.2 指定文件合并
+
+```sh
+#!/bin/bash
+
+# 输出文件
+output="code.txt"
+# 清空输出文件
+> $output
+
+# 输出项目目录结构
+echo "Project File Tree: " > $output
+tree -I 'node_modules|*.o|*.so|*.a|exe|*.pdf|.git' >> $output
+
+# 初始化包含和省略的文件列表
+omitted_files=()
+included_files=()
+
+# 解析命令行参数
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -r)
+            shift
+            while [[ $# -gt 0 ]] && [[ $1 != -* ]]; do
+                dir="$1"
+                # 收集指定目录中的所有文件
+                while IFS= read -r -d '' file; do
+                    included_files+=("$file")
+                done < <(find "$dir" -type f -print0)
+                shift
+            done
+            ;;
+        -f)
+            shift
+            while [[ $# -gt 0 ]] && [[ $1 != -* ]]; do
+                if [[ -f $1 ]]; then
+                    included_files+=("$1")
+                fi
+                shift
+            done
+            ;;
+        *)
+            echo "Usage: $0 -r <dir1> <dir2> ... -f <file1> <file2> ..."
+            exit 1
+            ;;
+    esac
+done
+
+output_files=()
+# 过滤有效的文件，排除.git文件夹的文件和其他不需要的文件后，存储在output_files数组中
+for file in "${included_files[@]}"; do
+    if [[ ! "$file" =~ \.o$ && ! "$file" =~ \.so$ && ! "$file" =~ \.pdf$ && ! "$file" =~ \.a$ && ! "$file" =~ /\.git/ && ! "$file" =~ /node_modules/ ]]; then
+        output_files+=("$file")
+    fi
+done
+
+# 输出包含的文件目录
+echo "Files We Care About: "
+echo -e "\n\nFiles We Care About: " >> $output
+for file in "${output_files[@]}"; do
+    echo "$file"
+    echo "$file" >> $output
+done
+
+# 输出包含的文件内容
+echo -e "\n\nFile Contents: " >> $output
+for file in "${output_files[@]}"; do
+    echo -e "\n\n=== FILE: $file ===\n" >> $output
+    cat "$file" >> $output
+done
+```
+脚本接收`-r`和`-f`参数，以指定要合并的文件夹和文件。`-r`指定的文件夹中所有文件都会被包括；`-f`需要指定文件的路径。
+
+# 3 示例
+
+## 3.1 全部文件合并
+
+假设需要合并项目[ComoFscpVoter](https://gitee.com/tjopenlab/como-fscp-voter)中的文件，其目录如下：
+```sh
+$ tree -L 2
+.
+├── LICENSE
+├── Makefile
+├── README.md
+├── clients
+│   ├── client_sender.c
+│   ├── voter_client.c
+│   ├── voter_client.h
+│   └── voter_client_tcp_1.c
+├── merge_all.sh
+├── merge_codes.sh
+├── rudp
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── README.md
+│   ├── docs
+│   ├── rudp.c
+│   ├── rudp.h
+│   └── tests
+├── src
+│   ├── como_fscp_voter.c
+│   ├── ...
+│   ├── voter_server.c
+│   ├── voter_server.h
+│   ├── voterlib.c
+│   └── voterlib.h
+...
+```
+
+将2.1中的脚本保存到merge_all.sh，放在根目录下，`chmod +x`添加权限，运行：
+
+```sh
+$ ./merge_all.sh
+```
+
+可以通过`ls -lh`命令看到，`code.txt`文件大小为565K，相当消耗Token。
+
+## 3.2 部分文件合并
+
+将2.2中的脚本保存到merge_codes.sh，放在根目录下，`chmod +x`添加权限。假设需要合并文件夹rudp和clients中的所有文件，以及根目录的./src/voter_server.c和./Makefile，运行：
+
+```sh
+$ ./merge_codes.sh -r rudp clients -f ./src/voter_server.c ./Makefile
+Files We Care About: 
+rudp/.gitignore
+rudp/.git
+rudp/rudp.h
+rudp/LICENSE
+rudp/rudp.c
+rudp/README.md
+rudp/docs/test.md
+rudp/Makefile
+rudp/tests/comm.h
+rudp/tests/main.c
+rudp/tests/comm.c
+rudp/tests/client.c
+rudp/tests/server.c
+clients/voter_client.h
+clients/client_sender.c
+clients/voter_client.c
+clients/voter_client_tcp_1.c
+./src/voter_server.c
+./Makefile
+```
+
+可以通过`ls -lh`命令看到，`code.txt`文件大小减小到了155K，内容示例：
+
+```sh
+（注：完整的文件树，便于LLM理解文件间层次关系）
+Project File Tree: 
+.
+├── LICENSE
+├── Makefile
+├── README.md
+├── clients
+│   ├── client_sender.c
+...
+├── startVoterServer.sh
+└── tests
+    ├── math_utils_test.c
+    ├── voter_logger_test.c
+    └── voter_test.sh
+
+21 directories, 147 files
+
+Files We Care About: 
+
+rudp/.gitignore
+rudp/.git
+rudp/rudp.h
+rudp/LICENSE
+rudp/rudp.c
+rudp/README.md
+rudp/docs/test.md
+rudp/Makefile
+rudp/tests/comm.h
+rudp/tests/main.c
+rudp/tests/comm.c
+rudp/tests/client.c
+rudp/tests/server.c
+clients/voter_client.h
+clients/client_sender.c
+clients/voter_client.c
+clients/voter_client_tcp_1.c
+./src/voter_server.c
+./Makefile
+
+File Contents: 
+
+=== FILE: rudp/.gitignore ===
+
+# Executables
+rudp
+server
+...
+.clang-format
+
+=== FILE: rudp/.git ===
+
+gitdir: ../.git/modules/rudp
+
+=== FILE: rudp/rudp.h ===
+
+...
+
+（依次列出所有选定的文件内容）
+```
+
+# 附录
+
+## A. 元Prompt
+
+```
+I want you to become my Expert Prompt Creator. Your goal is to help me craft the best possible prompt for my needs. The prompt you provide should be written from the perspective of me making the request to DeepSeek. Consider in your prompt creation that this prompt will be entered into an interface for DeepSeek. The process is as follows:
+1. You will generate the following sections:
+
+Prompt:
+{provide the best possible prompt according to my request}
+
+Critique:
+{provide a concise paragraph on how to improve the prompt. Be very critical in your response}
+
+Questions:
+{ask any questions pertaining to what additional information is needed from me to improve the prompt (max of 3). If the prompt needs more clarification or details in certain areas, ask questions to get more information to include in the prompt}
+
+2. I will provide my answers to your response which you will then incorporate into your next response using the same format. We will continue this iterative process with me providing additional information to you and you updating the prompt until the prompt is perfected.
+Remember, the prompt we are creating should be written from the perspective of me making a request to DeepSeek. Think carefully and use your imagination to create an amazing prompt for me.
+
+Your first response should only be a greeting to the user to ask what the prompt should be about. Respond me in Chinese.
+```
+
+## B. 附代码的Prompt
+
+```
+你需要了解一个项目，并回答有关问题。项目的树形文件结构、重点关注的文件以及代码内容已经在文本文件中给出。
+在"xxxx.c"文件中，"...（事实描述）..."。我的问题是："...（问题）..."？
+请一步步思考，这对我很重要。
+```
