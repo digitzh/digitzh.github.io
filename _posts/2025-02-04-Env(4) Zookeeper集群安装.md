@@ -1,4 +1,10 @@
+---
+layout: post
+title: Env(4) Zookeeper部署安装
+---
+
 参考文档：黑马06-zookeeper集群安装.doc
+
 ### 1 下载并解压
 
 在node1上下载：
@@ -7,7 +13,7 @@
 tar -zxvf zookeeper.tar.gz -C .
 ln -s apache-zookeeper-3.8.4-bin zookeeper
 ```
-## 2 修改配置文件
+### 2 修改配置文件
 
 ```sh
 cd zookeeper/conf
@@ -51,7 +57,7 @@ cd ./Work/2025
 ln -s apache-zookeeper-3.8.4-bin/ zookeeper
 echo 3 > zookeeper/zkdata/myid
 ```
-## 5 启动服务
+### 5 启动服务
 
 3台机器分别执行：
 ```sh
