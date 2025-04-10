@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Env(4) Zookeeper部署安装
+tags: [大数据, Zookeeper]
+categories: 技术文章/大数据
 ---
 
 参考文档：黑马06-zookeeper集群安装.doc
