@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Java 使用Deque替代Stack
-tags: 
+tags: Java
 categories: 技术文章
 ---
 

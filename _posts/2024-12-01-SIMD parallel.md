@@ -1,3 +1,10 @@
+---
+layout: post
+title: SIMD parallel
+tags: 多线程&并发
+categories: 技术文章
+---
+
 ### 1 基本概念
 
 **SIMD(Single Instruction Multiple Data, 单指令流多数据流)：** 一种采用一个控制器来控制多个处理器，同时对一组数据（又称“数据向量”）中的每一个分别执行相同的操作从而实现空间上的[并行性](https://zhida.zhihu.com/search?content_id=100424657&content_type=Article&match_order=1&q=%E5%B9%B6%E8%A1%8C%E6%80%A7&zhida_source=entity)的技术。简单来说就是一个指令能够同时处理多个数据。

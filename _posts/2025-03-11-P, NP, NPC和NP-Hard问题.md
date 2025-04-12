@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 1-P, NP, NPC和NP-Hard问题
-tags: 
+tags: 算法
 categories: 技术文章
 ---
 
@@ -36,7 +36,7 @@ categories: 技术文章
     - 若某个NPC问题存在多项式解法，则所有NP问题都可多项式解决（即P=NP）。
     - 目前未发现NPC问题的多项式解法，但也没有严格证明不存在。
 - **举例**：
-    - **3-SAT问题**（布尔可满足性问题，见[sat.pdf](http://staff.ustc.edu.cn/~jianmin/lecture/ai2021/sat.pdf)）；
+    - **3-SAT问题**（布尔可满足性问题，见[sat.pdf](https://github.com/digitzh/digitzh.github.io/blob/main/assets/pdf/2025-03-11-P%2C%20NP%2C%20NPC%E5%92%8CNP-Hard%E9%97%AE%E9%A2%98/sat.pdf)）；
     - **旅行商问题（TSP）**；
     - **哈密顿回路问题**。
 ### 1.4 NP难问题（NP-Hard）

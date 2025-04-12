@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Linux黑客基础
-tags: 
+title: Linux Hacker基础
+tags: Linux
 categories: 技术文章
 ---
 
-# 一 Linux基础
 ## 1 基础知识
+
 ### whereis和which
 
 whereis和which均用于查找二进制文件。which查找PATH变量中的二进制文件。
@@ -41,6 +41,7 @@ Helloworld!
 ## 2 文本操作
 
 ### head、tail和nl
+
 `head` - 查看前10行（默认），可指定行数：
 ```
 head -20 snort.conf
@@ -57,14 +58,3 @@ nl snort.conf
 sed s/mysql/MySQL/g /etc/snort/snort.conf > snort2.conf
 ```
 将`snort.conf`中的`mysql`替换成`MySQL`并保存到`snort2.conf`。其中`s`指search；`g`指global（全局替换）。
-
-# 二 LC
-
-### 验证回文串(125)
-
-如何将单个字符(char)追加到string字符串末尾？使用+=即可：
-```C++
-str += ch;
-```
-
-可以直接调用API反转字符串，判断是否与原字符串相等。

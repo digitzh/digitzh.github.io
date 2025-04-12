@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Unchecked异常
-tags: 
+title: Java Unchecked异常
+tags: Java
 categories: 核心技术
 ---
 
