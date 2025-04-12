@@ -1,43 +1,52 @@
-# Chirpy Starter
+# digitzh的技术笔记
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+欢迎来到digitzh的开源数字空间！内容主要分为以下几大类别：
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+## 📚 文章分类
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
+### 1. 核心技术（Core）
+- **基础技术**：Java、JVM、多线程与并发、数据结构与算法、设计模式
+- **开发框架**：Spring全家桶(Spring/SpringBoot/SpringCloud)、MyBatis
+- **中间件**：Dubbo、MQ、Zookeeper、Redis、ElasticSearch
+- **数据库**：MySQL原理与实践、分布式数据库
+- **系统架构**：分布式系统、微服务架构、网络协议
+- **运维工具**：Linux、Nginx、Tomcat、Git、Maven
 
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
+### 2. 算法题解（Algorithm）
+- LeetCode题解（Java/MySQL实现）
 
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
-```
+### 3. 大数据生态（BigData）
+- 实时计算：Flink原理与应用
+- 数据仓库：离线/实时数仓设计
+- OLAP引擎：使用与实践
+- 学习笔记：来自B站、掘金等平台的学习总结
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+### 4. 技术文章（TechBlog）
+- 实验室研究成果
+- 项目实战经验
+- 技术专题探讨（非体系化的技术文章）
 
-## Usage
+### 5. 生活随笔（Life）
+- 学习与成长经历
+- 兴趣爱好分享
+- 哲学与人生思考
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+## 🚀 技术方向
+正在探索/计划深入的方向：
+- Java后端基础
+- 分布式计算框架原理
+- 大数据开发（实时数仓/OLAP引擎开发）
+- 云原生技术栈
 
-## Contributing
+## 💬 交流互动
+欢迎就以下主题与我交流：
+- 技术问题讨论
+- 学习经验分享
+- 职业发展建议
+- 有趣的哲学话题
 
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
+📧 联系方式
+- 微信：digitzh
+- 邮件：digitzh@qq.com
 
-## License
-
-This work is published under [MIT][mit] License.
-
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+> Like dew or a flash of lightning; Thus we shall perceive them.
