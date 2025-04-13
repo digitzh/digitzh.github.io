@@ -5,12 +5,13 @@ tags: Java
 categories: 技术文章
 ---
 
-参考链接：[算法动画 | 被 "废弃" 的 Java 栈，为什么还在用](https://mp.weixin.qq.com/s/TSpWaYSUpjeR_wzSclCTQA)
+参考链接：[算法动画丨被 "废弃" 的 Java 栈，为什么还在用](https://mp.weixin.qq.com/s/TSpWaYSUpjeR_wzSclCTQA)
 
 ### Stack被废弃的原因
 
 1. 性能弱。Stack继承自Vector，是线程安全的，但性能弱于Deque。
 2. 有无关的方法。Stack继承自Vector，有add, remove等方法，但作为栈数据结构，应该只能通过push, pop方法操作栈顶元素。
+
 ### 使用Deque替代Stack
 
 使用Deque替代。常用的Deque子类是ArrayDeque。定义：
