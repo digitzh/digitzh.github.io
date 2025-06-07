@@ -37,23 +37,23 @@ Windows中，Claude配置文件的路径是`%APPDATA%\Roaming\Claude\desktop_con
 
 按照参考文章实践，成功利用GitHub MCP工具使AI自动创建仓库：
 
-![[1 自动创建GitHub仓库-1.png]]
+![](../images/2025-06-06-【实践】Java开发基于Spring%20AI%20Alibaba玩转MCP：从发布、调用到%20Claude%20集成/1%20自动创建GitHub仓库-1.png)
 
-![[2 自动创建GitHub仓库-2.png]]
+![](../images/2025-06-06-【实践】Java开发基于Spring%20AI%20Alibaba玩转MCP：从发布、调用到%20Claude%20集成/2%20自动创建GitHub仓库-2.png)
 
 ## 1.2 MCP 的架构
 
 - 客户端：一般指的是**大模型应用**，比如 Claude、通过 Spring AI Alibaba、Langchain 等框架开发的 AI 应用
 - 服务端：连接各种**数据源**的服务和工具
 
-![[3 MCP的架构.png]]
+![](../images/2025-06-06-【实践】Java开发基于Spring%20AI%20Alibaba玩转MCP：从发布、调用到%20Claude%20集成/3%20MCP的架构.png)
 即：Server对接各种数据源和服务，并通过MCP协议提供给Client。
 
 ## 2 在 Spring AI 中使用 Mcp Server
 
 ### 2.1 Spring AI MCP 的介绍
 
-![[4 Spring AI MCP架构.png]]
+![](../images/2025-06-06-【实践】Java开发基于Spring%20AI%20Alibaba玩转MCP：从发布、调用到%20Claude%20集成/4%20Spring%20AI%20MCP架构.png)
 
 ### 2.2 使用 Spring AI MCP 快速搭建 MCP Server
 
@@ -129,7 +129,8 @@ mvn spring-boot:run
 ```
 
 在Claude Desktop中可以查看自定义的MCP天气服务，并能成功调用查询：
-![[5 天气查询.png]]
+
+![](../images/2025-06-06-【实践】Java开发基于Spring%20AI%20Alibaba玩转MCP：从发布、调用到%20Claude%20集成/5%20天气查询.png)
 
 ## 3 在 Spring AI Alibaba 中集成 Mcp Client
 
