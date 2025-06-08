@@ -5,7 +5,7 @@ tags: [大数据, Zookeeper]
 categories: 技术文章/大数据
 ---
 
-参考文档：黑马06-zookeeper集群安装.doc
+参考文档：HM-06-zookeeper集群安装.doc
 
 ### 1 下载并解压
 

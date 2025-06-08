@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Jekyll+Netlify搭建静态网站
+title: Jekyll+GitHub/Netlify搭建静态网站
 tags: Jekyll
 categories: 技术文章
 ---
